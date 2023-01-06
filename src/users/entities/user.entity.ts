@@ -16,7 +16,7 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 90, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', unique: true })
+  @Column({ type: 'varchar' })
   password: string;
 
   @Column({ type: 'timestamptz', nullable: true })

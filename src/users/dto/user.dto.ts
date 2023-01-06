@@ -1,9 +1,24 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class UserDto {
-  id: number;
+  @ApiProperty()
+  id?: number;
+
+  @ApiProperty()
   name: string;
+
+  @ApiProperty()
   email: string;
+
+  @ApiProperty()
   password: string;
-  last_login: Date;
-  created_at: Date;
-  update_at: Date;
+
+  @ApiProperty()
+  last_login?: Date;
+
+  @ApiProperty()
+  created_at?: Date;
+
+  @ApiProperty()
+  update_at?: Date;
 }

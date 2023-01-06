@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { UserDto } from '../dto/user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,12 +10,34 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async createUser(creatUserDto: CreateUserDto) {
+  async createUser(userDto: UserDto) {
     const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(creatUserDto.password, salt);
+    const hashedPassword = await bcrypt.hash(userDto.password, salt);
 
-    creatUserDto.password = hashedPassword;
+    userDto.password = hashedPassword;
 
-    return await this.save(creatUserDto);
+    return await this.save(userDto);
+  }
+
+  async getAllUsers(limit, offset) {
+    const count = await this.count();
+
+    const users: UserDto[] = await this.find({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        last_login: true,
+      },
+      order: {
+        id: 'DESC',
+      },
+      skip: offset,
+      take: limit,
+    });
+
+    const usersResult = { "total_users": count, users };
+
+    return usersResult;
   }
 }

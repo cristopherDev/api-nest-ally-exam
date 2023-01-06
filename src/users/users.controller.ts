@@ -1,6 +1,15 @@
-import { Body, ConflictException, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { PaginationValidationPipe } from '../pipes/pagination-validation.pipe';
 import { JoiValidationPipe } from '../pipes/joi-validation.pipe';
 import { userSchema } from '../schemas/user.schema';
+import { UserDto } from './dto/user.dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
@@ -8,12 +17,26 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post()
-  async createUser(@Body(new JoiValidationPipe(userSchema)) user: User) {
+  @Get()
+  async getAllUsers(
+    @Query('limit', PaginationValidationPipe) limit?: number,
+    @Query('offset', PaginationValidationPipe) offset?: number,
+  ) {
     try {
-        return await this.usersService.creteUser(user);
+      return await this.usersService.getAllUser(limit, offset);
     } catch (error) {
-        throw new ConflictException(error.driverError.detail)
+      throw error;
+    }
+  }
+
+  @Post()
+  async createUser(
+    @Body(new JoiValidationPipe(userSchema)) user: User,
+  ): Promise<UserDto> {
+    try {
+      return await this.usersService.creteUser(user);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
     }
   }
 }
