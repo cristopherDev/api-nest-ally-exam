@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -24,6 +25,10 @@ export class TaskEntity {
   @CreateDateColumn()
   update_at: Date;
 
-  @ManyToOne(() => UserEntity, (user) => user.tasks)
-  user: UserEntity;
+  @Column()
+  user_id: number;
+
+  @OneToOne(() => UserEntity)
+  @JoinColumn()
+  public user: UserEntity;
 }

@@ -10,6 +10,11 @@ export class TaskRepository extends Repository<TaskEntity> {
   }
 
   async createTask(taskDto: TaskDto) {
-    return this.save(taskDto);
+    return await this.save(taskDto);
+  }
+
+  async getAllTaskByUserId() {
+    //return await this.dataSource.getRepository(TaskEntity).createQueryBuilder("task")
+    return await this.find({ relations: { user: true } });
   }
 }

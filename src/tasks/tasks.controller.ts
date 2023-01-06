@@ -1,4 +1,10 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { taskSchema } from '../schemas/task.schema';
 import { JoiValidationPipe } from '../pipes/joi-validation.pipe';
 import { TasksService } from './tasks.service';
@@ -9,6 +15,15 @@ import { TaskDto } from './dto/task.dto';
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
+  @Get()
+  async getAllTaskById() {
+    try {
+      return await this.taskService.getAllTaskById();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   @Post()
   async createTask(
     @Body(new JoiValidationPipe(taskSchema)) task: Task,
@@ -16,7 +31,7 @@ export class TasksController {
     try {
       return await this.taskService.createTask(task);
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error);
     }
   }
 }

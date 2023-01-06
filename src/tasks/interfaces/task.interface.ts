@@ -1,4 +1,4 @@
 export interface Task {
   task: string;
-  userId: number;
+  user_id: number;
 }

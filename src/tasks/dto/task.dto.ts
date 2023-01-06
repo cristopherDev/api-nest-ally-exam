@@ -17,5 +17,5 @@ export class TaskDto {
   update_at?: Date;
 
   @ApiProperty()
-  userId: number;
+  user_id?: number;
 }
