@@ -37,7 +37,7 @@ export class UsersController {
     try {
       return await this.usersService.creteUser(user);
     } catch (error) {
-      throw new ConflictException(error.driverError.detail);
+      throw new ConflictException(error.message);
     }
   }
 }

@@ -10,17 +10,21 @@ export class UserRepository extends Repository<UserEntity> {
     super(UserEntity, dataSource.createEntityManager());
   }
 
-  async createUser(userDto: UserDto) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(userDto.password, salt);
+  private async checkUserExists(email: string): Promise<UserEntity> {
+    const findEmail: UserEntity = await this.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        email,
+      },
+    });
 
-    userDto.password = hashedPassword;
-
-    return await this.save(userDto);
+    return findEmail;
   }
 
-  async getAllUsers(limit, offset) {
-    const count = await this.count();
+  async getAllUsers(limit: number, offset: number) {
+    const count: number = await this.count();
 
     const users: UserDto[] = await this.find({
       select: {
@@ -36,8 +40,23 @@ export class UserRepository extends Repository<UserEntity> {
       take: limit,
     });
 
-    const usersResult = { "total_users": count, users };
+    const usersResult = { total_users: count, users };
 
     return usersResult;
+  }
+
+  async createUser(userDto: UserDto): Promise<UserEntity> {
+    const checkResult: unknown = await this.checkUserExists(userDto.email);
+
+    if (!checkResult) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword: string = await bcrypt.hash(userDto.password, salt);
+
+      userDto.password = hashedPassword;
+
+      return await this.save(userDto);
+    }
+
+    throw new Error('User already exists');
   }
 }
