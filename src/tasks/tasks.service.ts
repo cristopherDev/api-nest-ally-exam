@@ -10,7 +10,7 @@ export class TasksService {
     return this.taskRepository.createTask(taskDto);
   }
 
-  getAllTaskById() {
-    return this.taskRepository.getAllTaskByUserId();
+  getAllTaskById(user_id: number) {
+    return this.taskRepository.getAllTaskByUserId(user_id);
   }
 }
