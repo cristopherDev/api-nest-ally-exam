@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -25,7 +26,7 @@ export class UsersController {
     try {
       return await this.usersService.getAllUser(limit, offset);
     } catch (error) {
-      throw error;
+      throw new BadRequestException();
     }
   }
 
